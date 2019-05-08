@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        .play{
+            width: 250px;
+            height: 50px;
+            background-color: chocolate;
+            border-radius: 25px;
+            text-align: center;
+            z-index: 1;
+            
+        }
+
+        .border_play{
+            position: relative;
+            width: 260px;
+            height: 105px;
+            border: 2px solid black;
+            border-radius: 25px;
+            background-color: gainsboro;
+            margin-left: 500px;
+            margin-top: 270px;
+            z-index: 12;
+        }
+        
+
+        #video_div {
+            top: 0; bottom: 0; left: 0; right: 0;
+            position: absolute;
+            overflow: hidden;
+            z-index: 1;
+        }
+        #Video {
+            top: 0; left: 0;
+            position: absolute;
+            width: auto; height: auto;
+            min-width: 100%; 
+            min-height: 100%; 
+        }
+       
+    </style>
+
+
+</head>
+<body>
+    
+    <div id="video_div" class="overlay">
+        <video muted id="Video" width="100%" height="auto" loop="loop" autoplay="autoplay" preload="auto">
+             <source src="game_v.mp4"></source>
+             <source src="game_v.webm" type="video/webm"></source>
+        </video>
+      </div>
+        
+    <div class="border_play">
+            <div class="play"  onclick="document.location = ' game.html '">
+                <h2>Play</h2>
+            </div>
+    </div>
+</body>
+</html>

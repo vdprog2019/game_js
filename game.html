@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game</title>
+
+
+    <style>
+        #canvas{
+            margin-left: 500px;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="288px" height="512px">
+        
+    </canvas>
+
+
+
+    <script> 
+        var requestId = -1;
+        var isPause = false;
+        var canv = document.getElementById("canvas"); 
+        var cont = canv.getContext("2d"); //возвращает нарисованное на холсте
+
+        //назначение картинок
+        var bird = new Image();
+        var bg = new Image();
+        var fg = new Image();
+        var pipeUp = new Image();
+        var pipeBottom = new Image();
+
+
+        //открытие картинок
+        bird.src = "bird.png";
+        bg.src = "bg.png";
+        fg.src = "fg.png";
+        pipeUp.src = "pipeUp.png";
+        pipeBottom.src = "pipeBottom.png";
+
+        //назначение песни
+        var fly = new Audio();
+        //var score_audio = new Audio();
+
+
+        fly.src = "hans_zimmer.mp3";
+        fly.play();  //музыка при полете
+
+
+
+        //нажатие на кнопку 
+        document.addEventListener("keydown", move_up); //определение обработчика 
+
+        function move_up(e)
+        {
+            if(e.keyCode == 80){
+                    isPause = !isPause;
+
+            
+            if(isPause == true){
+                cancelAnimationFrame(requestId);
+                requestId = -1;     
+                fly.pause(); 
+                y_pos += 30;    
+                
+            }else{
+                if(requestId == -1){
+                    requestId = requestAnimationFrame(draw);//запускает анимацию,запланировать перерисовку на следующем кадре анимации
+                    fly.play();  //музыка при полете
+                }
+            }
+            }
+
+            if(isPause == false){
+                y_pos -= 30;
+            }
+        }
+
+
+        //блоки
+        var pipe = [];
+
+        pipe[0] = {
+            x : canv.width,
+            y : 0
+        }
+
+
+        var gap = 90;
+        var score = 0;
+
+        //позиция птицы
+        var x_pos = 10;
+        var y_pos = 150;
+        var grav = 1.5; // скорость падения вниз птицы
+
+
+      function draw()
+      {
+        cont.drawImage(bg, 0, 0);   //нарисовать картинку
+
+
+
+        for(var i = 0; i < pipe.length; i++)
+        {
+            cont.drawImage(pipeUp, pipe[i].x, pipe[i].y);
+            cont.drawImage(pipeBottom, pipe[i].x, pipe[i].y + pipeUp.height + gap);
+            pipe[i].x--;
+
+            if(pipe[i].x == 130)
+            {
+                pipe.push({
+                    x : canv.width,
+                    //math.floor - возвращает целое число
+                    y : Math.floor(Math.random() * pipeUp.height - pipeUp.height) 
+                })
+            }
+           
+            
+           //столкновение с блоком
+            if(x_pos + bird.width >= pipe[i].x
+                && x_pos <= pipe[i].x + pipeUp.width
+                && (y_pos <= pipe[i].y + pipeUp.height
+                || y_pos + bird.height >= pipe[i].y + pipeUp.height + gap) 
+                || y_pos + bird.height >= canv.height - fg.height) {
+                location.reload(); // Перезагрузка страницы
+                }
+
+                if(pipe[i].x == 5)
+                {
+                    score++;
+                    fly.play();
+                }
+
+
+        }
+        
+
+        cont.drawImage(fg, 0, canv.height - fg.height);
+        cont.drawImage(bird, x_pos, y_pos);
+
+        y_pos += grav;
+
+        //счет
+        cont.fillStyle = "#000";
+        cont.font = "20px Verdana";
+        cont.fillText("Счет:" + score, 10, canv.height -20);
+
+       // if(requestId == -1){  
+            requestId = requestAnimationFrame(draw);//запускает анимацию,запланировать перерисовку на следующем кадре анимации
+       // }
+      }
+
+      pipeBottom.onload = draw; //после прорисовки заднего фона запустить - function draw()
+
+    </script>
+</body>
+</html>
